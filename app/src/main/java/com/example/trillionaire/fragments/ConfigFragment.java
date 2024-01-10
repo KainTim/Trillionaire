@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -17,7 +18,12 @@ import com.example.trillionaire.R;
 import com.example.trillionaire.databinding.FragmentConfigBinding;
 import com.example.trillionaire.enums.Difficulty;
 import com.example.trillionaire.enums.QuestionType;
+import com.example.trillionaire.models.Question;
+import com.example.trillionaire.models.StringQuestion;
+import com.example.trillionaire.viewmodels.MainViewModel;
 import com.google.android.material.chip.Chip;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,9 +31,12 @@ import org.json.JSONObject;
 
 public class ConfigFragment extends Fragment implements View.OnClickListener {
     private FragmentConfigBinding binding;
+    private MainViewModel viewModel;
+
     public ConfigFragment() {
         // Required empty public constructor
     }
+
     public static ConfigFragment newInstance() {
         ConfigFragment fragment = new ConfigFragment();
         //Bundle args = new Bundle();
@@ -50,6 +59,7 @@ public class ConfigFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentConfigBinding.inflate(inflater, container, false);
+        viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
         initNetworkCgs();
         initOfflineCgs();
         binding.btnStart.setOnClickListener(this);
@@ -96,7 +106,33 @@ public class ConfigFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (R.id.btnStart==v.getId()){
+        if (R.id.btnStart == v.getId()) {
+            viewModel.showGame();
+            RequestQueue queue = Volley.newRequestQueue(requireContext());
+            int amount = 25;
+            Difficulty difficulty = Difficulty.EASY;
+            String url = "https://opentdb.com/api.php?amount="+amount+"&difficulty="+difficulty.toString().toLowerCase()+"";
+            JsonObjectRequest request = new JsonObjectRequest
+                    (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            //Log.d("Response: " ,response.toString()+"\n\n"+response.names());
+                            try {
+                                JSONArray results = response.getJSONArray("results");
+                                TypeToken<StringQuestion> typeToken = TypeToken.get(StringQuestion.class);
+                                Gson gson = new Gson();
+                                for (int i = 0; i < amount ; i++) {
+                                    Question question = gson.fromJson(results.get(i).toString(), typeToken).convertToQuestion();
+                                    Log.d("", question.toString());
+                                }
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }, error -> {
+                        Log.e("QuestionError", error.toString());
+                    });
+            queue.add(request);
 
         }
     }

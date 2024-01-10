@@ -14,6 +14,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.trillionaire.R;
 import com.example.trillionaire.databinding.FragmentMenuBinding;
 import com.example.trillionaire.models.Question;
 import com.example.trillionaire.models.StringQuestion;
@@ -62,26 +63,8 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        RequestQueue queue = Volley.newRequestQueue(requireContext());
-        String url = "https://opentdb.com/api.php?amount=1&difficulty=medium";
-         JsonObjectRequest request = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        //Log.d("Response: " ,response.toString()+"\n\n"+response.names());
-                        try {
-                            JSONArray results = response.getJSONArray("results");
-                            TypeToken<StringQuestion> typeToken = TypeToken.get(StringQuestion.class);
-                            Gson gson = new Gson();
-                            Question question = gson.fromJson(results.get(0).toString(), typeToken).convertToQuestion();
-                            Log.d("", question.toString());
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                }, error -> binding.tvResult.setText(error.toString()));
-        queue.add(request);
-        viewModel.showConfig();
+        if (R.id.btnRequest==v.getId()){
+            viewModel.showConfig();
+        }
     }
-
 }

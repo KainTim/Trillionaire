@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.trillionaire.R;
 import com.example.trillionaire.fragments.ConfigFragment;
+import com.example.trillionaire.fragments.GameFragment;
 import com.example.trillionaire.fragments.MenuFragment;
 import com.example.trillionaire.viewmodels.MainViewModel;
 
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
                             .addToBackStack(null);
                     break;
                 case 3:
-                    transaction.replace(R.id.clMain, MenuFragment.newInstance())
+                    transaction.replace(R.id.clMain, GameFragment.newInstance())
                             .addToBackStack(null);
                     break;
                 default:
