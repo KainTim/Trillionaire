@@ -10,9 +10,9 @@ public class Question {
     public Difficulty difficulty;
     public String category;
     public String questionText;
-    public String correct_answer;
-    public List<String> incorrect_answers;
-    public Question(QuestionType type, Difficulty difficulty, String category, String questionText, String correct_answer, List<String> incorrect_answers) {
+    public Answer correct_answer;
+    public List<Answer> incorrect_answers;
+    public Question(QuestionType type, Difficulty difficulty, String category, String questionText, Answer correct_answer, List<Answer> incorrect_answers) {
         this.type = type;
         this.difficulty = difficulty;
         this.category = category;

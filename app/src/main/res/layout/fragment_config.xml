@@ -33,7 +33,9 @@
             android:id="@+id/cgCategories"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            app:singleLine="true" />
+            app:selectionRequired="false"
+            app:singleLine="true"
+            app:singleSelection="true" />
     </HorizontalScrollView>
 
     <TextView
@@ -61,7 +63,8 @@
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/cgDifficulty"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:singleSelection="true">
 
         </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>
@@ -91,7 +94,8 @@
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/cgType"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:singleSelection="true">
 
         </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>

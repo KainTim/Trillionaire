@@ -1,9 +1,13 @@
 package com.example.trillionaire.models;
 
+import android.os.Build;
+
 import com.example.trillionaire.enums.Difficulty;
 import com.example.trillionaire.enums.QuestionType;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Base64;
 
 public class StringQuestion {
     public String type;
@@ -34,6 +38,23 @@ public class StringQuestion {
                 '}';
     }
     public Question convertToQuestion(){
-        return new Question(QuestionType.valueOf(type.toUpperCase()), Difficulty.valueOf(difficulty.toUpperCase()),category,question,correct_answer,Arrays.asList(incorrect_answers));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return new Question(QuestionType.valueOf(new String(Base64.getDecoder().decode(type), StandardCharsets.UTF_8).toUpperCase()),
+                    Difficulty.valueOf(new String(Base64.getDecoder().decode(difficulty), StandardCharsets.UTF_8).toUpperCase()),
+                    new String(Base64.getDecoder().decode(category), StandardCharsets.UTF_8),
+                    new String(Base64.getDecoder().decode(question), StandardCharsets.UTF_8),
+                    new Answer(new String(Base64.getDecoder().decode(correct_answer), StandardCharsets.UTF_8),true),
+                    Arrays.asList(decodeArray(incorrect_answers)));
+        }
+        return null;
+    }
+    private Answer[] decodeArray(String[] encoded){
+        Answer[] decoded = new Answer[encoded.length];
+        for (int i = 0; i < encoded.length; i++) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                decoded[i]=new Answer (new String(Base64.getDecoder().decode(encoded[i]), StandardCharsets.UTF_8),false);
+            }
+        }
+        return decoded;
     }
 }

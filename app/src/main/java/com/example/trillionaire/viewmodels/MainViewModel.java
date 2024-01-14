@@ -4,9 +4,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.trillionaire.models.StringQuestion;
+import com.example.trillionaire.enums.Difficulty;
+import com.example.trillionaire.enums.QuestionType;
+import com.example.trillionaire.models.Category;
+import com.example.trillionaire.models.Question;
 
-import java.util.Stack;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainViewModel extends ViewModel {
     public static final int SHOW_MENU = 1;
@@ -14,8 +18,6 @@ public class MainViewModel extends ViewModel {
     public static final int SHOW_GAME = 3;
     private MutableLiveData<Integer> _state = new MutableLiveData<>(SHOW_MENU);
     public LiveData<Integer> state = _state;
-    private MutableLiveData<Stack<StringQuestion>> _questionStack = new MutableLiveData<>(new Stack<>());
-    public LiveData<Stack<StringQuestion>> questionStack = _questionStack;
     public void showMenu(){
         _state.postValue(SHOW_MENU);
     }
@@ -25,5 +27,9 @@ public class MainViewModel extends ViewModel {
     public void showGame(){
         _state.postValue(SHOW_GAME);
     }
-
+    public List<Category> categories = new ArrayList<>();
+    public List<Question> questions = new ArrayList<>();
+    public Category selectedCategory;
+    public QuestionType questionType;
+    public Difficulty difficulty = null;
 }
