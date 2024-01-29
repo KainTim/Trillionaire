@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="512"
+   height="512"
+   viewBox="0 0 512 512"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
+   sodipodi:docname="Icon.svg"
+   inkscape:export-filename="icon.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="px"
+     inkscape:zoom="0.92573547"
+     inkscape:cx="280.31766"
+     inkscape:cy="306.7831"
+     inkscape:window-width="1440"
+     inkscape:window-height="888"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer3" />
+  <defs
+     id="defs1">
+    <rect
+       x="200.92133"
+       y="230.08733"
+       width="78.856225"
+       height="160.95311"
+       id="rect3" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline"
+     sodipodi:insensitive="true">
+    <rect
+       style="fill:#008cff;fill-opacity:0.997821"
+       id="rect1"
+       width="530.3891"
+       height="531.4693"
+       x="-9.7220001"
+       y="-3.2406666"
+       inkscape:label="rect1" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Layer 2"
+     sodipodi:insensitive="true">
+    <ellipse
+       style="fill:#474798;fill-opacity:1"
+       id="path1"
+       cx="256"
+       cy="256"
+       rx="128.54645"
+       ry="85.877663" />
+    <ellipse
+       style="fill:#704798;fill-opacity:0.782135;stroke-width:1.4841"
+       id="path1-5"
+       cx="256"
+       cy="256"
+       rx="185.25812"
+       ry="131.24699" />
+    <ellipse
+       style="fill:#e0d3f4;fill-opacity:1;stroke-width:0.741208"
+       id="path1-59"
+       cx="256"
+       cy="256"
+       rx="106.942"
+       ry="56.711662" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Layer 3"
+     sodipodi:insensitive="true">
+    <circle
+       style="display:inline;fill:#ffffff;fill-opacity:0.997821"
+       id="path3"
+       cx="256"
+       cy="97.631248"
+       r="53" />
+    <circle
+       style="display:inline;fill:#ffffff;fill-opacity:0.997821"
+       id="path3-7"
+       cx="256"
+       cy="415.2428"
+       r="35" />
+    <circle
+       style="display:inline;fill:#ffffff;fill-opacity:0.997821"
+       id="path3-6"
+       cx="405.78986"
+       cy="329.45511"
+       r="35" />
+    <circle
+       style="display:inline;fill:#ffffff;fill-opacity:0.997821"
+       id="path3-61"
+       cx="106.21014"
+       cy="331.61554"
+       r="35" />
+    <text
+       xml:space="preserve"
+       id="text3"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:120px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';white-space:pre;shape-inside:url(#rect3);display:inline;fill:#000000;fill-opacity:0.832244"
+       transform="translate(27.328125,-47.572913)"><tspan
+         x="200.92188"
+         y="336.25977"
+         id="tspan2"><tspan
+           style="font-size:100px"
+           id="tspan1">T</tspan></tspan></text>
+  </g>
+</svg>

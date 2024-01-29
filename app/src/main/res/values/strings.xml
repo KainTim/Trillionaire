@@ -2,11 +2,16 @@
     <string name="app_name">Trillionaire</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="request">Request</string>
+    <string name="request">Start</string>
     <string name="result">result</string>
     <string name="categories">Categories</string>
     <string name="difficulty">Difficulty</string>
     <string name="type">Type</string>
     <string name="start">START</string>
     <string name="logo">Logo</string>
+    <string name="trillionaire">Trillionaire</string>
+    <string name="restart">Restart</string>
+    <string name="results">Results:</string>
+    <string name="back">Back</string>
+    <string name="Continue">Continue</string>
 </resources>

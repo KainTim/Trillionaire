@@ -1,10 +1,12 @@
 package com.example.trillionaire.fragments;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import java.util.ArrayList;
 
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +27,7 @@ import com.example.trillionaire.viewmodels.MainViewModel;
 import java.util.Collections;
 import java.util.List;
 
-public class GameFragment extends Fragment {
+public class GameFragment extends Fragment implements View.OnClickListener {
     private FragmentGameBinding binding;
     private MainViewModel viewModel;
     public GameFragment() {
@@ -48,12 +50,19 @@ public class GameFragment extends Fragment {
         binding = FragmentGameBinding.inflate(inflater,container,false);
         viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
         if (viewModel.questionType.equals(QuestionType.DOUBLE)){
-                initDoubleQuestion(viewModel.questions.get(0),viewModel.questions.get(1));
+                initDoubleQuestion(viewModel.questions.get(viewModel.questionIndex),viewModel.questions.get(viewModel.questionIndex+1));
+            viewModel.questionIndex+=2;
         }else {
-            initQuestion(viewModel.questions.get(0));
-
+            initQuestion(viewModel.questions.get(viewModel.questionIndex));
+            viewModel.questionIndex++;
         }
+        binding.btnBack.setOnClickListener(this);
+        initQuestionCount(viewModel.questionIndex, viewModel.questions.size());
         return binding.getRoot();
+    }
+
+    private void initQuestionCount(int count, int of) {
+        binding.tvGameCounter.setText(count+"/"+of);
     }
 
     private void initQuestion(Question question) {
@@ -65,9 +74,23 @@ public class GameFragment extends Fragment {
     private void initDoubleQuestion(Question question1, Question question2) {
         binding.llQuestions.removeAllViewsInLayout();
         initQuestionText(question1);
+        initQuestionText(question2);
+        initDoubleAnswers(question1,question2);
 
-        //initDoubleAnswers();
+    }
 
+    private void initDoubleAnswers(Question question1, Question question2) {
+        viewModel.answerContainers.clear();
+        Answer correctAnswer;
+        ArrayList<Answer> wrongAnswers = new ArrayList<>();
+        if (Math.random()<0.5){
+            correctAnswer = question1.correct_answer;
+            wrongAnswers.add(question2.incorrect_answers.get((int)(Math.random()*question2.incorrect_answers.size())));
+        }else{
+            correctAnswer = question2.correct_answer;
+            wrongAnswers.add(question1.incorrect_answers.get((int)(Math.random()*question1.incorrect_answers.size())));
+        }
+        initAnswers(correctAnswer,wrongAnswers);
     }
 
     private void initQuestionText(Question question) {
@@ -94,10 +117,22 @@ public class GameFragment extends Fragment {
     }
 
     private void initAnswers(Answer correctAnswer, List<Answer> incorrectAnswers) {
+        viewModel.answerContainers.clear();
         binding.llAnswers.removeAllViewsInLayout();
         ArrayList<Answer> answers = new ArrayList<>(incorrectAnswers);
         answers.add(correctAnswer);
-        Collections.shuffle(answers);
+        if (viewModel.questionType==QuestionType.BOOLEAN){
+            answers.sort((o1, o2) -> {
+                if (o1.getText().equalsIgnoreCase("True")) {
+                    return -1;
+                }
+                return 1;
+            });
+        }else {
+            Collections.shuffle(answers);
+        }
+        viewModel.currentAnswers.clear();
+        viewModel.currentAnswers.addAll(answers);
         for (Answer answer : answers) {
             initAnswer(answer);
         }
@@ -106,6 +141,8 @@ public class GameFragment extends Fragment {
     private void initAnswer(Answer answer) {
         CardView cardView = new CardView(requireContext());
         cardView.setRadius(10);
+        cardView.setOnClickListener(this);
+        viewModel.answerContainers.add(cardView);
         TextView textView = new TextView(requireContext());
         textView.setSingleLine(false);
         textView.setPadding(25,25,25,25);
@@ -124,5 +161,26 @@ public class GameFragment extends Fragment {
         cardView.setLayoutParams(params);
         binding.llAnswers.addView(cardView);
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (viewModel.answerContainers.contains(v)){
+            CardView cardView = (CardView) v;
+            viewModel.answerContainers.indexOf(v);
+            TextView tvText = (TextView) (cardView).getChildAt(0);
+            if (viewModel.currentAnswers.contains(new Answer(tvText.getText().toString(),false))){
+                int index = viewModel.currentAnswers.indexOf(new Answer(tvText.getText().toString(), false));
+                Answer answer = viewModel.currentAnswers.get(index);
+                if (answer.isCorrect()){
+                    viewModel.isCorrect = true;
+                    viewModel.rightAnswers++;
+                }else {
+                    viewModel.isCorrect = false;
+                    viewModel.wrongAnswers++;
+                }
+                viewModel.showContinue();
+            }
+        }
     }
 }

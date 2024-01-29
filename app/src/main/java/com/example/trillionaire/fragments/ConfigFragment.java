@@ -65,6 +65,21 @@ public class ConfigFragment extends Fragment implements View.OnClickListener{
         initNetworkCgs();
         initOfflineCgs();
         binding.btnStart.setOnClickListener(this);
+        binding.btnStart.setText("Start");
+        binding.btnStart.setBackgroundColor(Color.GRAY);
+        viewModel.requestState.observe(getViewLifecycleOwner(),integer -> {
+            if (integer==1){
+                binding.btnStart.setBackgroundColor(Color.GRAY);
+                binding.btnStart.setText("Success...");
+                viewModel.showGame();
+            }else if (integer==2){
+                binding.btnStart.setBackgroundColor(Color.RED);
+                binding.btnStart.setText("No Questions!");
+            }else if (integer==3){
+                binding.btnStart.setBackgroundColor(Color.RED);
+                binding.btnStart.setText("RETRYING...");
+            }
+        });
         return binding.getRoot();
     }
 
@@ -85,112 +100,50 @@ public class ConfigFragment extends Fragment implements View.OnClickListener{
             chip.setId(ViewCompat.generateViewId());
             chip.setCheckable(true);
             chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (isChecked) viewModel.questionType = QuestionType.valueOf(buttonView.getText().toString().toUpperCase());
+                if (isChecked) viewModel.questionType = QuestionType.convertToEnum(buttonView.getText().toString().toUpperCase());
             });
             binding.cgType.addView(chip);
         }
     }
 
     private void initNetworkCgs() {
-        RequestQueue queue = Volley.newRequestQueue(requireContext());
-        String url = "https://opentdb.com/api_category.php";
-        JsonObjectRequest request = new JsonObjectRequest
-                (Request.Method.GET, url, null, response -> {
-                    //Log.d("Response: " ,response.toString()+"\n\n"+response.names());
-                    try {
-                        Log.d("", response.toString());
-                        JSONArray results = response.getJSONArray("trivia_categories");
-                        Log.d("", results.toString());
-                        for (int i = 0; i < results.length(); i++) {
-                            String name = results.getJSONObject(i).getString("name");
-                            int id = results.getJSONObject(i).getInt("id");
-                            viewModel.categories.add(new Category(name,id));
-                            Chip chip = new Chip(requireContext());
-                            chip.setText(name);
-                            chip.setId(ViewCompat.generateViewId());
-                            chip.setCheckable(true);
-                            chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                                if (isChecked) viewModel.selectedCategory = viewModel.categories.stream()
-                                        .filter(category -> category.getName().equalsIgnoreCase(chip.getText().toString()))
-                                        .findFirst()
-                                        .get();
-                            });
-                            binding.cgCategories.addView(chip);
-                        }
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                }, error -> Log.e("API ERROR", error.toString()));
-        queue.add(request);
+        viewModel.requestCategories();
+        viewModel.cgState.observe(getViewLifecycleOwner(),integer -> {
+            if (integer== 0) return;
+            for (int i = 0; i < viewModel.categories.size(); i++) {
+                Chip chip = new Chip(requireContext());
+                chip.setText(viewModel.categories.get(i).getName());
+                chip.setId(ViewCompat.generateViewId());
+                chip.setCheckable(true);
+                chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    if (isChecked) viewModel.selectedCategory = viewModel.categories.stream()
+                            .filter(category -> category.getName().equalsIgnoreCase(chip.getText().toString()))
+                            .findFirst()
+                            .get();
+                });
+                binding.cgCategories.addView(chip);
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
         if (R.id.btnStart == v.getId()) {
-            viewModel.questions.clear();
-            RequestQueue queue = Volley.newRequestQueue(requireContext());
             int amount = 25;
             StringBuilder sb = new StringBuilder("https://opentdb.com/api.php");
             sb.append("?amount=").append(amount).append("&encode=base64");
             if (viewModel.selectedCategory!=null) sb.append("&category=").append(viewModel.selectedCategory.getId());
             if (viewModel.difficulty!=null) sb.append("&difficulty=").append(viewModel.difficulty.toString().toLowerCase());
-            if (viewModel.questionType!=null) if (viewModel.questionType!=QuestionType.DOUBLE) sb.append("&type=").append(viewModel.questionType.toString().toLowerCase());
-            if (viewModel.questionType!=null) if (viewModel.questionType==QuestionType.DOUBLE){
+            if (viewModel.questionType!=null) if (viewModel.questionType!=QuestionType.DOUBLE) {
+                sb.append("&type=").append(viewModel.questionType.toString().toLowerCase());
+            }else if (viewModel.questionType!=null) if (viewModel.questionType==QuestionType.DOUBLE){
                 sb.append("&type=").append(QuestionType.MULTIPLE.toString().toLowerCase());
-                amount*=2;
+            }
+            if (viewModel.questionType==null){
+                viewModel.questionType = QuestionType.BOOLEAN;
             }
             String url = sb.toString();
-
-            int finalAmount = amount;
-            JsonObjectRequest backupRequest = new JsonObjectRequest
-                    (Request.Method.GET, "https://opentdb.com/api.php?amount="+amount, null, response -> {
-                        //Log.d("Response: " ,response.toString()+"\n\n"+response.names());
-                        try {
-                            JSONArray results = response.getJSONArray("results");
-                            TypeToken<StringQuestion> typeToken = TypeToken.get(StringQuestion.class);
-                            Gson gson = new Gson();
-                            for (int i = 0; i < finalAmount; i++) {
-                                Question question = gson.fromJson(results.get(i).toString(), typeToken).convertToQuestion();
-                                viewModel.questions.add(question);
-                                Log.d("", question.toString());
-                            }
-                            viewModel.showGame();
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }, error -> Log.e("QuestionError", error.toString()));
-
-            JsonObjectRequest request = new JsonObjectRequest
-                    (Request.Method.GET, url, null, response -> {
-                        //Log.d("Response: " ,response.toString()+"\n\n"+response.names());
-                        try {
-                            JSONArray results = response.getJSONArray("results");
-                            TypeToken<StringQuestion> typeToken = TypeToken.get(StringQuestion.class);
-                            Gson gson = new Gson();
-                            for (int i = 0; i < results.length() ; i++) {
-                                Question question = gson.fromJson(results.get(i).toString(), typeToken).convertToQuestion();
-                                viewModel.questions.add(question);
-                                Log.d("", question.toString());
-                            }
-                            viewModel.showGame();
-                        } catch (JSONException e) {
-                            Handler handler = new Handler();
-                            new Thread(() -> {
-                                try {
-                                    handler.post(() ->{
-                                        binding.btnStart.setBackgroundColor(Color.RED);
-                                        binding.btnStart.setText("Retrying...");
-                                    } );
-                                    Thread.sleep(5000);
-                                    Log.d("","Added backupRequest to queue");
-                                    queue.add(backupRequest);
-                                } catch (InterruptedException ex) {
-                                    throw new RuntimeException(ex);
-                                }
-                            }).start();
-                        }
-                    }, error -> Log.e("QuestionError", error.toString()));
-            queue.add(request);
+            viewModel.requestQuestions(url);
 
         }
     }
