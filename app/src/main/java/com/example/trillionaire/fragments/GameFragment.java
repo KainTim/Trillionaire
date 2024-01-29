@@ -18,6 +18,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.trillionaire.R;
 import com.example.trillionaire.databinding.FragmentGameBinding;
 import com.example.trillionaire.enums.QuestionType;
 import com.example.trillionaire.models.Answer;
@@ -181,6 +182,10 @@ public class GameFragment extends Fragment implements View.OnClickListener {
                 }
                 viewModel.showContinue();
             }
+        }
+        if (v.getId() == R.id.btnBack){
+            viewModel.init();
+
         }
     }
 }

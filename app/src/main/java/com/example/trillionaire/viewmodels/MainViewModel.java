@@ -135,4 +135,20 @@ public class MainViewModel extends ViewModel {
         requestQueue.add(request);
     }
 
+    public void init() {
+        isCorrect = false;
+        categories.clear();
+        questions.clear();
+        selectedCategory = null;
+        questionType = null;
+        difficulty = null;
+        currentAnswers.clear();
+        answerContainers.clear();
+        requestQueue.cancelAll(request -> true);
+        _requestState.postValue(0);
+        questionIndex = 0;
+        wrongAnswers = 0;
+        rightAnswers = 1;
+        showConfig();
+    }
 }

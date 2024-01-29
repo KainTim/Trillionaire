@@ -68,7 +68,9 @@ public class ConfigFragment extends Fragment implements View.OnClickListener{
         binding.btnStart.setText("Start");
         binding.btnStart.setBackgroundColor(Color.GRAY);
         viewModel.requestState.observe(getViewLifecycleOwner(),integer -> {
-            if (integer==1){
+            if (integer==0){
+
+            }else if (integer==1){
                 binding.btnStart.setBackgroundColor(Color.GRAY);
                 binding.btnStart.setText("Success...");
                 viewModel.showGame();
