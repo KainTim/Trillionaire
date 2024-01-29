@@ -50,6 +50,7 @@ public class ContinueFragment extends Fragment implements View.OnClickListener {
         binding.btnContinue.setOnClickListener(this);
         binding.tvContinueCount.setText(viewModel.questionIndex+"/"+viewModel.questions.size());
         binding.tvCorrectAnswer.setText(viewModel.questions.get(viewModel.questionIndex-1).correct_answer.getText());
+        binding.btnContinueBack.setOnClickListener(this);
         return binding.getRoot();
     }
 
@@ -61,6 +62,9 @@ public class ContinueFragment extends Fragment implements View.OnClickListener {
             }else {
                 viewModel.showGame();
             }
+        }
+        if (R.id.btnContinueBack == v.getId()){
+            viewModel.init();
         }
     }
 }
